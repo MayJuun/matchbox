@@ -2,7 +2,7 @@ services:
   matchbox:
     # build: .
     # image: matchbox:latest
-    image: matchbox:v3.4.0    
+    image: matchbox:v3.4.0
     container_name: matchbox
     restart: on-failure
     ports:
