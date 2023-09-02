@@ -1,3 +1,17 @@
+# MayJuun
+
+Our minor edits in order to be able to push it properly to GCP (or anywhere)
+
+1. [matchbox-server/with-postgres/docker-compose.yml](matchbox-server/with-postgres/docker-compose.yml) does not recognize:
+   - ```image: matchbox:latest```  
+    so a specific version must be included
+   - ```image: matchbox:v3.4.0```
+2. [matchbox-server/with-preload/docker-compose.yml](matchbox-server/with-preload/docker-compose.yml) does not recognize:
+   - ```image: matchbox:latest```  
+    so a specific version must be included
+   - ```image: matchbox:v3.4.0```
+3. A script was added to build & upload the docker image to GCP: [matchbox-server/build_matchbox_server.sh](matchbox-server/build_matchbox_server.sh)
+
 # Matchbox
 
 [Matchbox](https://matchbox.health) is a FHIR server based on the [hapifhir/hapi-fhir-jpaserver-starter](https://github.com/hapifhir/hapi-fhir-jpaserver-starter)
