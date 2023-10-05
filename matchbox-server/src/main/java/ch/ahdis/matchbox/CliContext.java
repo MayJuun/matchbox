@@ -59,6 +59,8 @@ public class CliContext {
   private boolean noUnicodeBiDiControlChars = false;
   @JsonProperty("noInvariants")
   private boolean noInvariants = false;
+  @JsonProperty("displayIssuesAreWarnings")
+  private boolean displayIssuesAreWarnings = true;
   @JsonProperty("wantInvariantsInMessages")
   private boolean wantInvariantsInMessages = false;
   @JsonProperty("doImplicitFHIRPathStringConversion")
@@ -89,7 +91,7 @@ public class CliContext {
   // @JsonProperty("fhirpath")
   // private String fhirpath = null;
   @JsonProperty("snomedCT")
-  private String snomedCT = "900000000000207008";
+  private String snomedCT = null;
   @JsonProperty("fhirVersion")
   private String fhirVersion = null;
 
@@ -149,6 +151,12 @@ public class CliContext {
     return igsPreloaded;
   }
 
+  private boolean onlyOneEngine = false;
+
+  public boolean getOnlyOneEngine() {
+    return this.onlyOneEngine;
+  }
+
   @Autowired
   public CliContext(Environment environment) {
     		// get al list of all JsonProperty of cliContext with return values property name and property type
@@ -172,6 +180,7 @@ public class CliContext {
 		}
     // get properties array from the environment?
     this.igsPreloaded = environment.getProperty("matchbox.fhir.context.igsPreloaded", String[].class);
+    this.onlyOneEngine = environment.getProperty("matchbox.fhir.context.onlyOneEngine", Boolean.class, false);
   }
 
   public CliContext(CliContext other) {
@@ -189,6 +198,7 @@ public class CliContext {
 			} 
 		}
     this.igsPreloaded = other.igsPreloaded;
+    this.onlyOneEngine = other.onlyOneEngine;
   }
 
   @JsonProperty("ig")
@@ -371,7 +381,7 @@ public class CliContext {
   }
 
   @JsonProperty("snomedCT")
-  public String getSnomedCTCode() {
+  public String getSnomedCT() {
     if ("intl".equals(snomedCT)) return "900000000000207008";
     if ("us".equals(snomedCT)) return "731000124108";
     if ("uk".equals(snomedCT)) return "999000041000000102";
@@ -381,6 +391,7 @@ public class CliContext {
     if ("se".equals(snomedCT)) return "45991000052106";
     if ("es".equals(snomedCT)) return "449081005";
     if ("dk".equals(snomedCT)) return "554471000005108";
+    if ("ch".equals(snomedCT)) return "2011000195101";
     return snomedCT;
   }
 
@@ -447,6 +458,16 @@ public class CliContext {
   @JsonProperty("noInvariants")
   public void setNoInvariants(boolean noInvariants) {
     this.noInvariants = noInvariants;
+  }
+
+  @JsonProperty("displayIssuesAreWarnings")
+  public boolean isDisplayIssuesAreWarnings() {
+    return displayIssuesAreWarnings;
+  }
+
+  @JsonProperty("displayIssuesAreWarnings")
+  public void setDisplayIssuesAreWarnings(boolean displayIssuesAreWarnings) {
+    this.displayIssuesAreWarnings = displayIssuesAreWarnings;
   }
 
   @JsonProperty("wantInvariantsInMessages")
@@ -529,6 +550,7 @@ public class CliContext {
       noExtensibleBindingMessages == that.noExtensibleBindingMessages &&
       noUnicodeBiDiControlChars == that.noUnicodeBiDiControlChars &&
       noInvariants == that.noInvariants &&
+      displayIssuesAreWarnings == that.displayIssuesAreWarnings &&
       wantInvariantsInMessages == that.wantInvariantsInMessages &&
       Objects.equals(txServer, that.txServer) &&
       Objects.equals(lang, that.lang) &&
@@ -549,7 +571,7 @@ public class CliContext {
   @Override
   public int hashCode() {
     return Objects.hash(doNative,  hintAboutNonMustSupport, recursive, doDebug, assumeValidRestReferences, canDoNative, 
-            noExtensibleBindingMessages, noInvariants, wantInvariantsInMessages, txServer, lang, snomedCT,
+            noExtensibleBindingMessages, noInvariants, displayIssuesAreWarnings, wantInvariantsInMessages, txServer, lang, snomedCT,
             fhirVersion, ig, questionnaireMode, level, mode, locale, locations, crumbTrails, forPublication, allowExampleUrls, jurisdiction, noUnicodeBiDiControlChars);
   }
 
@@ -565,6 +587,7 @@ public class CliContext {
       ", noExtensibleBindingMessages=" + noExtensibleBindingMessages +
       ", noUnicodeBiDiControlChars=" + noUnicodeBiDiControlChars +
       ", noInvariants=" + noInvariants +
+      ", displayIssuesAreWarnings=" + displayIssuesAreWarnings +
       ", wantInvariantsInMessages=" + wantInvariantsInMessages +
       ", txServer='" + txServer + '\'' +
       ", lang='" + lang + '\'' +

@@ -296,7 +296,9 @@ public class XmlParser extends ParserBase {
 	private void parseChildren(String path, org.w3c.dom.Element node, Element element) throws FHIRFormatError, FHIRException, IOException, DefinitionException {
 		// this parsing routine retains the original order in a the XML file, to support validation
 		reapComments(node, element);
-		List<Property> properties = element.getProperty().getChildProperties(element.getName(), XMLUtil.getXsiType(node));
+
+		String xsiType = XMLUtil.getXsiType(node);
+		List<Property> properties = element.getProperty().getChildProperties(element.getName(), xsiType);
 
 		String text = XMLUtil.getDirectText(node).trim();
 		int line = line(node, false);
@@ -304,21 +306,9 @@ public class XmlParser extends ParserBase {
 		if (!Utilities.noString(text)) {
 			Property property = getTextProp(properties);
 			if (property != null) {
-				if ("ED.data[x]".equals(property.getDefinition().getId()) || (property.getDefinition()!=null && property.getDefinition().getBase()!=null && "ED.data[x]".equals(property.getDefinition().getBase().getPath()))) {
-					if ("B64".equals(node.getAttribute("representation"))) {
-						Element n = new Element("dataBase64Binary", property, "base64Binary", text).markLocation(line, col);
-						n.setPath(element.getPath()+"."+property.getName());
-						element.getChildren().add(n);
-					} else {
-						Element n = new Element("dataString", property, "string", text).markLocation(line, col);
-						n.setPath(element.getPath()+"."+property.getName());
-						element.getChildren().add(n);
-					}
-				} else {
-					Element n = new Element(property.getName(), property, property.getType(), text).markLocation(line, col);
-					n.setPath(element.getPath()+"."+property.getName());
-					element.getChildren().add(n);
-				}
+				Element n = new Element(property.getName(), property, property.getType(), text).markLocation(line, col);
+				n.setPath(element.getPath()+"."+property.getName());
+				element.getChildren().add(n);
 			}
 			else {
 				Node n = node.getFirstChild();
@@ -426,7 +416,7 @@ public class XmlParser extends ParserBase {
 						boolean ok = true;
 						if (property.isChoice()) {
 							if (property.getDefinition().hasRepresentation(PropertyRepresentation.TYPEATTR)) {
-								String xsiType = ((org.w3c.dom.Element) child).getAttributeNS(FormatUtilities.NS_XSI, "type");
+								xsiType = ((org.w3c.dom.Element) child).getAttributeNS(FormatUtilities.NS_XSI, "type");
 								if (Utilities.noString(xsiType)) {
 									if (ToolingExtensions.hasExtension(property.getDefinition(), "http://hl7.org/fhir/StructureDefinition/elementdefinition-defaulttype")) {
 										xsiType = ToolingExtensions.readStringExtension(property.getDefinition(), "http://hl7.org/fhir/StructureDefinition/elementdefinition-defaulttype");

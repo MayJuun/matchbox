@@ -15,7 +15,10 @@
       "name": "Launch MatchboxCli",
       "request": "launch",
       "mainClass": "ch.ahdis.matchbox.engine.cli.MatchboxCli",
-      "projectName": "${workspaceFolder}/matchbox-engine"
+      "projectName": "matchbox-engine",
+      "args": "-transform test.map",
+      "vmArgs": "-Dlog.ch.ahdis.matchbox.engine.CdaMappingEngine=error",
+      "cwd": "${workspaceFolder}/matchbox-engine"
     },
     {
       "type": "java",
@@ -24,6 +27,33 @@
       "mainClass": "ca.uhn.fhir.jpa.starter.Application",
       "projectName": "matchbox-server",
       "vmArgs": "-Dspring.config.additional-location=file:with-postgres/application.yaml",
+      "cwd": "${workspaceFolder}/matchbox-server"
+    },
+    {
+      "type": "java",
+      "name": "Launch Matchbox-Server (preload)",
+      "request": "launch",
+      "mainClass": "ca.uhn.fhir.jpa.starter.Application",
+      "projectName": "matchbox-server",
+      "vmArgs": "-Dspring.config.additional-location=file:with-preload/application.yaml",
+      "cwd": "${workspaceFolder}/matchbox-server"
+    },
+    {
+      "type": "java",
+      "name": "Launch Matchbox-Server (cda)",
+      "request": "launch",
+      "mainClass": "ca.uhn.fhir.jpa.starter.Application",
+      "projectName": "matchbox-server",
+      "vmArgs": "-Dspring.config.additional-location=file:with-cda/application.yaml",
+      "cwd": "${workspaceFolder}/matchbox-server"
+    },
+    {
+      "type": "java",
+      "name": "Launch Matchbox-Server (ch-elm)",
+      "request": "launch",
+      "mainClass": "ca.uhn.fhir.jpa.starter.Application",
+      "projectName": "matchbox-server",
+      "vmArgs": "-Dspring.config.additional-location=file:with-elm/application.yaml",
       "cwd": "${workspaceFolder}/matchbox-server"
     },
     {
