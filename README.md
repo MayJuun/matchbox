@@ -12,6 +12,11 @@ Our minor edits in order to be able to push it properly to GCP (or anywhere)
    - ```image: matchbox:v3.4.0```
 3. A script was added to build & upload the docker image to GCP: [matchbox-server/build_matchbox_server.sh](matchbox-server/build_matchbox_server.sh)
 
+[ahdis/matchbox - application.yaml](https://github.com/ahdis/matchbox/blob/main/matchbox-server/with-preload/application.yaml)
+
+From the path/digital square version, their docker-compose.yaml file, the important line is:
+```- matchbox.fhir.context.onlyOneEngine=true```
+
 # Matchbox
 
 [Matchbox](https://matchbox.health) is a FHIR server based on the [hapifhir/hapi-fhir-jpaserver-starter](https://github.com/hapifhir/hapi-fhir-jpaserver-starter)
