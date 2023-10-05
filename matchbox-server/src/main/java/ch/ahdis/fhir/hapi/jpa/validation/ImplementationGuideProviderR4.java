@@ -58,7 +58,9 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.SimpleBundleProvider;
+import ch.ahdis.matchbox.CliContext;
 import ch.ahdis.matchbox.MatchboxEngineSupport;
+import ch.ahdis.matchbox.engine.MatchboxEngine;
 import ch.ahdis.matchbox.engine.cli.VersionUtil;
 import ch.ahdis.matchbox.util.MatchboxPackageInstallerImpl;
 
@@ -74,6 +76,9 @@ public class ImplementationGuideProviderR4 extends ca.uhn.fhir.jpa.rp.r4.Impleme
 
 	@Autowired
 	protected MatchboxEngineSupport matchboxEngineSupport;
+
+	@Autowired
+	private CliContext cliContext;
 
 	@Override
 	public MethodOutcome delete(HttpServletRequest theRequest, IIdType theResource, String theConditional,
@@ -100,12 +105,6 @@ public class ImplementationGuideProviderR4 extends ca.uhn.fhir.jpa.rp.r4.Impleme
 		OperationOutcome oo = load(theResource);
 		MethodOutcome outcome = new MethodOutcome();
 		outcome.setOperationOutcome(oo);
-
-		// initialize matchbox engine
-		log.info("Initializing matchbox engine(s): " + VersionUtil.getMemory());
-		matchboxEngineSupport.getMatchboxEngine(FHIRVersion._4_0_1.getDisplay(), null, false, true);
-		log.info("Initializing matchbox engine finished: " + VersionUtil.getMemory());
-
 		return outcome;
 	}
 
@@ -170,6 +169,7 @@ public class ImplementationGuideProviderR4 extends ca.uhn.fhir.jpa.rp.r4.Impleme
 				.addInstallResourceTypes(MatchboxPackageInstallerImpl.DEFAULT_INSTALL_TYPES.toArray(new String[0]))
 				.setInstallMode(PackageInstallationSpec.InstallModeEnum.STORE_ONLY)
 				.addDependencyExclude("hl7.fhir.r4.core")
+				.addDependencyExclude("hl7.fhir.r5.core")
 				.addDependencyExclude("hl7.terminology")
 				.addDependencyExclude("hl7.terminology.r4")
 				.addDependencyExclude("hl7.fhir.r4.examples");
@@ -193,6 +193,17 @@ public class ImplementationGuideProviderR4 extends ca.uhn.fhir.jpa.rp.r4.Impleme
 				.setName(theResource.getName())
 				.setVersion(theResource.getVersion())
 				.setInstallMode(PackageInstallationSpec.InstallModeEnum.STORE_ONLY));
+
+		if (cliContext!=null && cliContext.getOnlyOneEngine()) {
+			MatchboxEngine engine = matchboxEngineSupport.getMatchboxEngine(FHIRVersion._4_0_1.getDisplay(), this.cliContext, false, false);
+			try {
+				engine.loadPackage(theResource.getUrl(), theResource.getVersion());
+			} catch (Exception e) {
+				log.error("Error loading package " + theResource.getUrl() + " " + theResource.getVersion(), e);
+			}
+		} else {
+			matchboxEngineSupport.getMatchboxEngine(FHIRVersion._4_0_1.getDisplay(), this.cliContext, false, true);
+		}
 		return getOperationOutcome(installOutcome);
 	}
 
@@ -221,7 +232,18 @@ public class ImplementationGuideProviderR4 extends ca.uhn.fhir.jpa.rp.r4.Impleme
 		matchboxEngineSupport.setInitialized(true);
 		log.info("Initializing packages finished " + VersionUtil.getMemory());
 		log.info("Creating cached engines during startup  " + VersionUtil.getMemory());
-		matchboxEngineSupport.getMatchboxEngine(null,null, false, false);
+		MatchboxEngine engine = matchboxEngineSupport.getMatchboxEngine(null,this.cliContext, false, true);
+		if (cliContext!=null && cliContext.getOnlyOneEngine()) {
+			List<NpmPackageVersionEntity> packages = myPackageVersionDao
+					.findAll(org.springframework.data.domain.Sort.by(Direction.ASC, "myPackageId", "myVersionId"));
+			for (NpmPackageVersionEntity npmPackage : packages) {
+				try {
+					engine.loadPackage(npmPackage.getPackageId(), npmPackage.getVersionId());
+				} catch (Exception e) {
+					log.error("Error loading package " + npmPackage.getPackageId() + " " + npmPackage.getVersionId(), e);
+				}
+			}
+		}
 		log.info("Finished engines during startup  " + VersionUtil.getMemory());
 		return installOutcome;
 	}

@@ -1,3 +1,35 @@
+2023/10/05 Release 3.4.5
+- `docker pull europe-west6-docker.pkg.dev/ahdis-ch/ahdis/matchbox:v3.4.5`
+- CDA Logical Model update for xsi-type ST [#145](https://github.com/ahdis/matchbox/issues/145)
+
+2023/10/03 Release 3.4.4
+- `docker pull europe-west6-docker.pkg.dev/ahdis-ch/ahdis/matchbox:v3.4.4`
+- CDA Logical Model update for xsi-type ST [#145](https://github.com/ahdis/matchbox/issues/145)
+- update hl7.terminology package from 5.1.0 to 5.3.0 [#146](https://github.com/ahdis/matchbox/issues/146)
+- Validation: Upload of new IG over API does not configure it for validation [#144](https://github.com/ahdis/matchbox/issues/144)
+
+2023/09/20 Release 3.4.3
+
+- `docker pull europe-west6-docker.pkg.dev/ahdis-ch/ahdis/matchbox:v3.4.3`
+- FML: Contained ConceptMap in StructureMap does not work for transformation [#137](https://github.com/ahdis/matchbox/issues/137)
+- FML: POST / PUT for StructureMap should return HTTP error code 404 instead of 200 in deployment mode [#133](https://github.com/ahdis/matchbox/issues/133)
+- FHIR Validation problem with not support R5 extensions [#135](https://github.com/ahdis/matchbox/issues/135)
+- FHIR Validation Errors for display values should only be warnings [#132](https://github.com/ahdis/matchbox/issues/132)
+- GET all and query for url is not working in development mode [#129](https://github.com/ahdis/matchbox/issues/129)
+- matchbox app assumed matchboxv3 as the app location [#128](https://github.com/ahdis/matchbox/issues/128)
+- FHIR R4 validation error with cross version Extension for R5 [#138](https://github.com/ahdis/matchbox/issues/138)
+
+2023/09/05 Release 3.4.2
+
+- `docker pull europe-west6-docker.pkg.dev/ahdis-ch/ahdis/matchbox:v3.4.2`
+- Query all conformance resources by type [#129](https://github.com/ahdis/matchbox/issues/129)
+
+2023/09/04 Release 3.4.1
+
+- `docker pull europe-west6-docker.pkg.dev/ahdis-ch/ahdis/matchbox:v3.4.1`
+- development mode to create conformance resources [#125](https://github.com/ahdis/matchbox/issues/125)
+- matchbox version in capability statement [matchbox#126](https://github.com/ahdis/matchbox/issues/126)
+
 2023/08/30 Release 3.4.0
 
 - `docker pull europe-west6-docker.pkg.dev/ahdis-ch/ahdis/matchbox:v3.4.0`
